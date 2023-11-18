@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include <stdio.h>
+#include <string.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -48,7 +49,7 @@ TIM_HandleTypeDef htim2;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+uint8_t tx_buffer[27] = "Hello\n\r";
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -114,15 +115,16 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   uint32_t ADC_value = 0;
-  //char str[20];
+  char str[20];
   while (1)
   {
     /* USER CODE END WHILE */
-	  HAL_GPIO_TogglePin(LED_RED_GPIO_Port, LED_RED_Pin);
-	  HAL_Delay(1000) ;
-	  ADC_value = HAL_ADC_GetValue (&hadc1 ) ;
+	  HAL_ADC_Start(&hadc1);
+	  HAL_ADC_PollForConversion(&hadc1, 20);
+	  ADC_value = HAL_ADC_GetValue(&hadc1);
+	  sprintf(str, "ADC_value: %lu \r\n",ADC_value);
 
-	  HAL_UART_Transmit(&huart2 , (void*)str , sprintf( str , "%d\n" ,ADC_value ) , 1000) ;
+	  HAL_UART_Transmit(&huart2 , (uint8_t *)str , strlen(str) , HAL_MAX_DELAY) ;
 	  HAL_Delay (500) ;
     /* USER CODE BEGIN 3 */
   }
