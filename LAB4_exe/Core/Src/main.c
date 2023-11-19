@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "fsm.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -72,6 +73,9 @@ uint8_t buffer_flag = 0;
 uint8_t curr_index_buffer = 0;
 uint8_t command_flag = 0;
 char command_data [MAX_BUFFER_SIZE]= "";
+uint32_t ADC_value = 0;
+
+
 
 
 void HAL_UART_RxCpltCallback ( UART_HandleTypeDef * huart ) {
@@ -122,24 +126,31 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
   HAL_UART_Receive_IT (&huart2 , &temp , 1) ;
+  HAL_ADC_Start(&hadc1);
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  uint32_t ADC_value = 0;
-  char str[20];
+
   while (1)
   {
     /* USER CODE END WHILE */
-	  HAL_ADC_Start(&hadc1);
-	  HAL_ADC_PollForConversion(&hadc1, 20);
-	  ADC_value = HAL_ADC_GetValue(&hadc1);
-	  sprintf(str, "ADC_value: %lu \r\n",ADC_value);
-
-	  HAL_UART_Transmit(&huart2 , (uint8_t *)str , strlen(str) , HAL_MAX_DELAY) ;
-	  HAL_Delay (500) ;
-
+//	  HAL_ADC_Start(&hadc1);
+//	  HAL_ADC_PollForConversion(&hadc1, 20);
+//	  ADC_value = HAL_ADC_GetValue(&hadc1);
+//	  sprintf(str, "ADC_value: %lu \r\n",ADC_value);
+//
+//	  HAL_UART_Transmit(&huart2 , (uint8_t *)str , strlen(str) , HAL_MAX_DELAY) ;
+//	  HAL_Delay (500) ;
+	  if( buffer_flag == 1) {
+	  		  command_parser_fsm () ;
+	  //		  int len = sprintf ( str , "get: %c\r\n", buffer[curr_index_buffer++] );
+	  //		  HAL_UART_Transmit (&huart2 , (void *) str, len, 1000);
+	  //		  if(curr_index_buffer==30) curr_index_buffer = 0;
+	  		  buffer_flag = 0;
+	  	  }
+	  	  uart_communiation_fsm () ;
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -334,7 +345,7 @@ static void MX_GPIO_Init(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 
-
+	timerRun();
 }
 /* USER CODE END 4 */
 

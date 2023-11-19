@@ -37,7 +37,17 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+#define MAX_BUFFER_SIZE 30
+extern uint8_t temp;
+extern uint8_t buffer [MAX_BUFFER_SIZE];
+extern uint8_t index_buffer;
+extern uint8_t curr_index_buffer;
+extern uint8_t buffer_flag;
+extern uint8_t command_flag;
+extern ADC_HandleTypeDef hadc1;
+extern UART_HandleTypeDef huart2;
+extern char command_data[MAX_BUFFER_SIZE];
+extern int timer0_flag;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
