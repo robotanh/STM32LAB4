@@ -18,7 +18,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
+#include "fsm.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -64,14 +64,27 @@ static void MX_TIM2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+#define MAX_BUFFER_SIZE 30
 uint8_t temp = 0;
+uint8_t buffer [ MAX_BUFFER_SIZE ];
+uint8_t index_buffer = 0;
+uint8_t buffer_flag = 0;
+uint8_t curr_index_buffer = 0;
+uint8_t command_flag = 0;
+char command_data [MAX_BUFFER_SIZE]= "";
+
 
 void HAL_UART_RxCpltCallback ( UART_HandleTypeDef * huart ) {
-	if( huart -> Instance == USART2 ) {
-	HAL_UART_Transmit (&huart2 , &temp	 , 1 , 50);
-	HAL_UART_Receive_IT (&huart2 , &temp , 1);
+	if( huart->Instance == USART2 ) {
+		HAL_UART_Transmit (&huart2 , &temp , 1, 50);
+		buffer [ index_buffer++] = temp ;
+		if( index_buffer == 30) index_buffer = 0;
+		buffer_flag = 1;
+//		HAL_UART_Transmit (&huart2 , &temp, 1, 1000);
+		HAL_UART_Receive_IT (& huart2 , & temp , 1) ;
 	}
 }
+
 
 /* USER CODE END 0 */
 
@@ -126,6 +139,7 @@ int main(void)
 
 	  HAL_UART_Transmit(&huart2 , (uint8_t *)str , strlen(str) , HAL_MAX_DELAY) ;
 	  HAL_Delay (500) ;
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
