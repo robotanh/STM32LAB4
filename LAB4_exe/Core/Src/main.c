@@ -73,7 +73,7 @@ uint8_t buffer_flag = 0;
 uint8_t curr_index_buffer = 0;
 uint8_t command_flag = 0;
 char command_data [MAX_BUFFER_SIZE]= "";
-uint32_t ADC_value = 0;
+//uint32_t ADC_value = 0;
 
 
 

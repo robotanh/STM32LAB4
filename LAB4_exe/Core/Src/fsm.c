@@ -8,7 +8,6 @@ enum Command_state {
 };
 static enum Command_state command_state = Begin;
 uint8_t index_command = 0;
-
 void command_parser_fsm (){
 	switch (command_state){
 	case Begin:
@@ -34,8 +33,7 @@ void command_parser_fsm (){
 			command_state = Begin;
 		}
 		else {
-			index_command++;
-			command_data[index_command] = buffer[curr_index_buffer];
+			command_data[index_command++] = buffer[curr_index_buffer];
 		}
 		curr_index_buffer++;
 		if(curr_index_buffer==30) curr_index_buffer=0;
@@ -55,7 +53,7 @@ void uart_communiation_fsm () {
 	case Init:
 		if(command_flag==1 && strcmp(command_data, "RST") == 0) {
 			HAL_GPIO_TogglePin ( GPIOA , GPIO_PIN_5 ) ;
-			HAL_ADC_PollForConversion(&hadc1, 20);
+			//HAL_ADC_PollForConversion(&hadc1, 20);
 			ADC_value = HAL_ADC_GetValue (&hadc1);
 			sprintf( strr , "\r\n!ADC=%lu#\r\n", ADC_value );
 			HAL_UART_Transmit (&huart2 , (uint8_t *) strr, strlen( strr), HAL_MAX_DELAY);
